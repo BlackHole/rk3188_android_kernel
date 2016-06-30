@@ -1,8 +1,0 @@
-#
-# all auto modem control drivers configuration
-#
-
-config RK_IPC
-	bool "RK3190 IPC"
-	default n	
-

@@ -1,5 +1,0 @@
-#
-config TOUCHSCREEN_ZET62XX
-tristate "zet62xx touchscreen driver"
-help
-zet62xx touchscreen driver

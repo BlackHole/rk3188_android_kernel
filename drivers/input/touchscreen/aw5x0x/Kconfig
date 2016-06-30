@@ -1,4 +1,0 @@
-config TOUCHSCREEN_AW5209
-      tristate "aw5209 touchscreen driver"
-      help
-      aw5209 touchscreen driver
