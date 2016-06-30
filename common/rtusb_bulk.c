@@ -36,7 +36,7 @@
 UCHAR	EpToQueue[6]={FIFO_EDCA, FIFO_EDCA, FIFO_EDCA, FIFO_EDCA, FIFO_EDCA, FIFO_MGMT};
 
 
-extern int wifi_close_called;
+//extern int wifi_close_called;
 
 #ifdef INF_AMAZON_SE	
 UINT16 MaxBulkOutsSizeLimit[5][4] =
@@ -1144,11 +1144,12 @@ VOID BulkInCmdRspEvent(RTMP_ADAPTER *pAd)
 	RTUSBInitCmdRspEventDesc(pAd, pCmdRspEventContext);
 	pURB = pCmdRspEventContext->pUrb;
 	
-	if (wifi_close_called == 1){
+/*	if (wifi_close_called == 1){
 			printk("mt7601u:wifi_close_called\n");
 			DBGPRINT(RT_DEBUG_TRACE, ("%s wifi_close_called == 1\n", __FUNCTION__));
 	        return;
 	}
+*/
 
 	if ((ret = RTUSB_SUBMIT_URB(pURB)) != 0)
 	{

@@ -89,7 +89,6 @@ static INT rt28xx_send_packets(IN struct sk_buff *skb_p, IN struct net_device *n
 struct net_device_stats *RT28xx_get_ether_stats(
     IN  struct net_device *net_dev);
 
-extern int wifi_close_called;
 
 /*
 ========================================================================
@@ -223,7 +222,6 @@ int rt28xx_close(VOID *dev)
 
 	DBGPRINT(RT_DEBUG_TRACE, ("===> %s : rt28xx_close\n", DRIVER_ROLE));
 
-    wifi_close_called = 1;
 
 	/* Sanity check for pAd */
 	if (pAd == NULL)
@@ -262,7 +260,6 @@ int rt28xx_open(VOID *dev)
 	VOID *pAd = NULL;
 	int retval = 0;
 	ULONG OpMode;
- wifi_close_called = 0;
 
 #ifdef CONFIG_STA_SUPPORT
 #ifdef CONFIG_PM

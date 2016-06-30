@@ -205,7 +205,7 @@ HAS_ANDES_FIRMWARE_SUPPORT=n
 HAS_HDR_TRANS_SUPPORT=n
 
 HAS_MULTI_CHANNEL=n
-HAS_PRE_ALLOC=y
+HAS_PRE_ALLOC=n
 #################################################
 
 CC := $(CROSS_COMPILE)gcc

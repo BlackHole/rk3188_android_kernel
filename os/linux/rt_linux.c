@@ -1739,15 +1739,16 @@ void RtmpOSNetDevDetach(PNET_DEV pNetDev)
 #if 1
 	int ret;
 
-	 //ret = rtnl_trylock();
-	 //while(rtnl_is_locked())
-	 //	RTMPusecDelay(1);
+	 ret = rtnl_trylock();
+	 while(rtnl_is_locked())
+	 	RTMPusecDelay(1);
 	 	
-	//rtnl_lock();
+	rtnl_lock();
+
 	unregister_netdevice(pNetDev);
 
-	//if ( ret )
-		//rtnl_unlock();
+	if ( ret )
+		rtnl_unlock();
 #else
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,26))
 	if(!rtnl_is_locked())
@@ -3535,6 +3536,9 @@ void CFG80211OS_P2pClientConnectResultInform(
 
 BOOLEAN CFG80211OS_RxMgmt(IN PNET_DEV pNetDev, IN INT32 freq, IN PUCHAR frame, IN UINT32 len) 
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,12,0))
+	return cfg80211_rx_mgmt(pNetDev->ieee80211_ptr, freq, 0,frame,len,1 << 0 /* NL80211_RXMGMT_FLAG_ANSWERED*/ ,GFP_ATOMIC);//return 0 in dbm
+#else
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,4,0))
 	return cfg80211_rx_mgmt(pNetDev->ieee80211_ptr, freq, 0,frame,len,GFP_ATOMIC);//return 0 in dbm
 #else
@@ -3549,6 +3553,7 @@ BOOLEAN CFG80211OS_RxMgmt(IN PNET_DEV pNetDev, IN INT32 freq, IN PUCHAR frame, I
 #endif /*2.6.34*/
 #endif /*2.6.37*/
 #endif /*3.4.0*/
+#endif /*3.12.0*/
 
 }
 

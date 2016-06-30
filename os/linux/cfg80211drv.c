@@ -2983,7 +2983,7 @@ VOID CFG80211_LostGoInform(
 	if ((pAd->Cfg80211VifDevSet.vifDevList.size > 0) &&        
 	((pNetDev = RTMP_CFG80211_FindVifEntry_ByType(pAd, RT_CMD_80211_IFTYPE_P2P_CLIENT)) != NULL))
 	{
-		//cfg80211_disconnected(pNetDev, 0, NULL, 0, GFP_KERNEL);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0)
 	        if (pNetDev->ieee80211_ptr->sme_state == CFG80211_SME_CONNECTING)
        	 	{
                    cfg80211_connect_result(pNetDev, NULL, NULL, 0, NULL, 0,
@@ -2993,6 +2993,9 @@ VOID CFG80211_LostGoInform(
         	{
                    cfg80211_disconnected(pNetDev, 0, NULL, 0, GFP_KERNEL);
         	}
+#else
+		cfg80211_disconnected(pNetDev, 0, NULL, 0, GFP_KERNEL);
+#endif
 	}
 	else
 		DBGPRINT(RT_DEBUG_ERROR, ("80211> BUG CFG80211_LostGoInform, BUT NetDevice not exist.\n"));
@@ -3022,11 +3025,11 @@ VOID CFG80211_LostApInform(
 	PRTMP_ADAPTER pAd = (PRTMP_ADAPTER)pAdCB;
 	CFG80211_CB *p80211CB = pAd->pCfg80211_CB;
 	
-	DBGPRINT(RT_DEBUG_TRACE, ("80211> CFG80211_LostApInform ==> %d\n", 
-					p80211CB->pCfg80211_Wdev->sme_state));
 	pAd->StaCfg.bAutoReconnect = FALSE;
 
-	//cfg80211_disconnected(pAd->net_dev, 0, NULL, 0, GFP_KERNEL);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,11,0)
+	DBGPRINT(RT_DEBUG_TRACE, ("80211> CFG80211_LostApInform ==> %d\n", 
+					p80211CB->pCfg80211_Wdev->sme_state));
 	if (p80211CB->pCfg80211_Wdev->sme_state == CFG80211_SME_CONNECTING)
 	{
 		   cfg80211_connect_result(pAd->net_dev, NULL, NULL, 0, NULL, 0,
@@ -3036,6 +3039,9 @@ VOID CFG80211_LostApInform(
 	{
 		   cfg80211_disconnected(pAd->net_dev, 0, NULL, 0, GFP_KERNEL);
 	} 
+#else
+	cfg80211_disconnected(pAd->net_dev, 0, NULL, 0, GFP_KERNEL);
+#endif
 
 }
 

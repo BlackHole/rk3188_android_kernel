@@ -326,8 +326,13 @@ typedef struct file* RTMP_OS_FD;
 
 typedef struct _OS_FS_INFO_
 {
-	int				fsuid;
-	int				fsgid;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+   kuid_t fsuid;
+   kgid_t fsgid;
+#else.
+   int fsuid;
+   int fsgid;
+#endif
 	mm_segment_t	fs;
 } OS_FS_INFO;
 

@@ -34,12 +34,13 @@ static int usb_wifi_host = 2;
 void extern_usb_wifi_power(int is_power);	
 #endif 
 
+
 #ifdef ROCKCHIP
 extern int wifi_activate_usb(void);
 extern int wifi_deactivate_usb(void);
 #endif
 
-int wifi_close_called = 0;
+
 /* Following information will be show when you run 'modinfo' */
 /* *** If you have a solution for the bug in current version of driver, please mail to me. */
 /* Otherwise post to forum in ralinktech's web site(www.ralinktech.com) and let all users help you. *** */
@@ -501,11 +502,6 @@ static int rt2870_suspend(
 	struct usb_interface *intf,
 	pm_message_t state)
 {
-	//by xiaoyao
-	printk("<=== rt2870_suspend()\n");
-		return 0;
-	//by xiaoyao
-	
 	struct net_device *net_dev;
 	VOID *pAd = usb_get_intfdata(intf);
 #if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
@@ -584,11 +580,7 @@ static int rt2870_resume(
 {
 	struct net_device *net_dev;
 	VOID *pAd = usb_get_intfdata(intf);
-	// by xiaoyao
-	printk("<=== rt2870_resume()\n");
-		return 0;
-	// by xiaoyao
-	
+
 #if (defined(WOW_SUPPORT) && defined(RTMP_MAC_USB)) || defined(NEW_WOW_SUPPORT)
 	UCHAR Flag;
 	RTMP_DRIVER_ADAPTER_RT28XX_WOW_STATUS(pAd, &Flag);
@@ -665,11 +657,9 @@ static int rt2870_resume(
 #endif /* LINUX_VERSION_CODE */
 
 
-
-
-INT  rtusb_init(void)
+/* Init driver module */
+INT __init rtusb_init(void)
 {
-	
 	printk("%s : @@@@@@ rtusb init %s --->\n", DRIVER_ROLE, RTMP_DRV_NAME);
 #ifdef ALLWINNER
 	int ret;
@@ -713,10 +703,9 @@ INT  rtusb_init(void)
 }
 
 /* Deinit driver module */
-VOID  rtusb_exit(void)
+VOID __exit rtusb_exit(void)
 {
-
-	
+    printk("---> @@@@@@ %s : rtusb exit\n", DRIVER_ROLE);
 	usb_deregister(&rtusb_driver);	
 #ifdef ALLWINNER
         printk("%s: sw_usb_disable_hcd: usbc_num = %d\n",DRIVER_ROLE, item.val);
@@ -733,44 +722,8 @@ VOID  rtusb_exit(void)
 	printk("<--- %s : rtusb exit\n",DRIVER_ROLE);
 }
 
-
-
-
-extern int wifi_activate_usb(void);
-extern int wifi_deactivate_usb(void);
-
-#define MT7601U_DRV_VERSION "v1.0"
-int rockchip_wifi_init_module(void)
-{
-    printk("\n");
-    printk("=======================================================\n");
-    printk("==== Launching Wi-Fi driver! (Powered by Rockchip) ====\n");
-    printk("=======================================================\n");
-    printk("MT7601U USB WiFi driver (Powered by Rockchip,Ver %s) init.\n", MT7601U_DRV_VERSION);
-    wifi_activate_usb();
-    return rtusb_init();
-}
-
-void rockchip_wifi_exit_module(void)
-{
-    printk("\n");
-    printk("=======================================================\n");
-    printk("==== Dislaunching Wi-Fi driver! (Powered by Rockchip) ====\n");
-    printk("=======================================================\n");
-    printk("MT7601U USB WiFi driver (Powered by Rockchip,Ver %s) init.\n", MT7601U_DRV_VERSION);
-    printk("---> rtusb exit\n");
-    
-    rtusb_exit();
-    wifi_deactivate_usb();
-}
-
-EXPORT_SYMBOL(rockchip_wifi_init_module);
-EXPORT_SYMBOL(rockchip_wifi_exit_module);
-
-
-
-
-
+module_init(rtusb_init);
+module_exit(rtusb_exit);
 
 /*---------------------------------------------------------------------	*/
 /* function declarations												*/
